@@ -1,69 +1,74 @@
-/** @type {HTMLCanvasElement} **/
+// Canvas setup
 const canvas = document.querySelector('#canvas');
 const ctx = canvas.getContext('2d');
-
-// Set canvas dimensions
 const CANVAS_WIDTH = canvas.width = 500;
 const CANVAS_HEIGHT = canvas.height = 1000;
-const numberOfEnemies = 300;
-const enemiesArray = [];
 
+// Constants
+const NUMBER_OF_ENEMIES = 300;
+const enemiesArray = [];
 let gameFrame = 0;
+
+// Utility function to get random values within a range
+const getRandomInRange = (min, max) => Math.random() * (max - min) + min;
 
 // Enemy class definition
 class Enemy {
-	constructor() {
-		// Random initial position and speed
+	constructor(imageSrc, spriteWidth, spriteHeight, scale = 2.5) {
 		this.image = new Image();
-		this.image.src = './assets/enemies/enemy1.png';
-		this.x = Math.random() * CANVAS_WIDTH;
-		this.y = Math.random() * CANVAS_HEIGHT;
-		this.speed = Math.random() * 4 - 2; // Random speed between -2 and 2 from [0, 4] to [-2, 2]
-		this.spriteWidth = 293;
-		this.spriteHeight = 155;
-		this.width = this.spriteWidth / 2.5;
-		this.height = this.spriteHeight / 2.5;
+		this.image.src = imageSrc;
+		this.x = getRandomInRange(0, CANVAS_WIDTH);
+		this.y = getRandomInRange(0, CANVAS_HEIGHT);
+		this.speedX = getRandomInRange(-2, 2);
+		this.speedY = getRandomInRange(-2, 2);
+		this.spriteWidth = spriteWidth;
+		this.spriteHeight = spriteHeight;
+		this.width = this.spriteWidth / scale;
+		this.height = this.spriteHeight / scale;
 		this.frame = 0;
-		this.flapSpeed = Math.floor(Math.random() * 3 + 1);
+		this.flapSpeed = Math.floor(getRandomInRange(1, 4));
 	}
 
 	update() {
-		// Move the enemy
-		this.x += this.speed;
-		this.y += this.speed;
-		// Animate sprites
+		this.x += this.speedX;
+		this.y += this.speedY;
+
+		// Loop sprite animation frames
 		if (gameFrame % this.flapSpeed === 0) {
-			this.frame > 4 ? this.frame = 0 : this.frame++;
+			this.frame = (this.frame + 1) % 5;
 		}
 	}
 
 	draw() {
-		// Draw the enemy as a stroked rectangle
-		ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
+		ctx.drawImage(
+			this.image, 
+			this.frame * this.spriteWidth, 0, 
+			this.spriteWidth, this.spriteHeight, 
+			this.x, this.y, this.width, this.height
+		);
 	}
 }
 
-// Create multiple enemies and push them into the array
-for (let i = 0; i < numberOfEnemies; i++) {
-	enemiesArray.push(new Enemy());
+// Initialize enemies
+function createEnemies() {
+	for (let i = 0; i < NUMBER_OF_ENEMIES; i++) {
+		enemiesArray.push(new Enemy('./assets/enemies/enemy1.png', 293, 155));
+	}
 }
 
-// Start the animation loop once the window loads
+// Animation loop
+function animate() {
+	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	enemiesArray.forEach(enemy => {
+		enemy.update();
+		enemy.draw();
+	});
+	gameFrame++;
+	requestAnimationFrame(animate);
+}
+
+// Start animation when the window loads
 window.addEventListener('load', () => {
-	function animate() {
-		// Clear the canvas for each frame
-		ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-		// Update and draw each enemy
-		enemiesArray.forEach((enemy) => {
-			enemy.update();
-			enemy.draw();
-		});
-		gameFrame++;
-		// Request the next animation frame
-		requestAnimationFrame(animate);
-	}
-
-	// Start the animation
+	createEnemies();
 	animate();
 });
