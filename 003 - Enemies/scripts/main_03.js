@@ -5,7 +5,7 @@ const CANVAS_WIDTH = canvas.width = 500;
 const CANVAS_HEIGHT = canvas.height = 1000;
 
 // Constants
-const NUMBER_OF_ENEMIES = 100;
+const NUMBER_OF_ENEMIES = 200;
 const enemiesArray = [];
 let gameFrame = 0;
 
@@ -17,15 +17,14 @@ class Enemy {
 	constructor(imageSrc, spriteWidth, spriteHeight, scale = 2.5) {
 		this.image = new Image();
 		this.image.src = imageSrc;
-
-		// this.speedX = getRandomInRange(-2, 2);
-		// this.speedY = getRandomInRange(-2, 2);
+		this.x = getRandomInRange(0, CANVAS_WIDTH);
+		this.y = getRandomInRange(0, CANVAS_HEIGHT);
+		this.speedX = getRandomInRange(-2, 2);
+		this.speedY = getRandomInRange(-2, 2);
 		this.spriteWidth = spriteWidth;
 		this.spriteHeight = spriteHeight;
 		this.width = this.spriteWidth / scale;
 		this.height = this.spriteHeight / scale;
-		this.x = Math.random() * (CANVAS_WIDTH - this.width);
-		this.y = Math.random() * (CANVAS_HEIGHT - this.height);
 		this.frame = 0;
 		this.flapSpeed = Math.floor(getRandomInRange(1, 4));
 		this.direction = 1;
@@ -43,11 +42,8 @@ class Enemy {
 
 	update() {
 		// Update object's position with wrapping logic
-		// this.x = this.checkWrap(this.x + this.speedX, CANVAS_WIDTH, this.width);
-		// this.y = this.checkWrap(this.y + this.speedY, CANVAS_HEIGHT, this.height);
-
-		this.x += Math.random() * 5 - 2.5;
-		this.y += Math.random() * 5 - 2.5;
+		this.x = this.checkWrap(this.x + this.speedX, CANVAS_WIDTH, this.width);
+		this.y = this.checkWrap(this.y + this.speedY, CANVAS_HEIGHT, this.height);
 
 		/*
 			Loop sprite animation frames
