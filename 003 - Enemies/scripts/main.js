@@ -5,7 +5,7 @@ const CANVAS_WIDTH = canvas.width = 500;
 const CANVAS_HEIGHT = canvas.height = 1000;
 
 // Constants
-const NUMBER_OF_ENEMIES = 300;
+const NUMBER_OF_ENEMIES = 200;
 const enemiesArray = [];
 let gameFrame = 0;
 
@@ -27,12 +27,24 @@ class Enemy {
 		this.height = this.spriteHeight / scale;
 		this.frame = 0;
 		this.flapSpeed = Math.floor(getRandomInRange(1, 4));
+		this.direction = 1;
+	}
+
+	checkWrap(position, limit, size) {
+		if (position < -size) {
+			return limit;  // If the position is too far left/up, move it to the right/bottom
+		}
+		if (position > limit) {
+			return -size;  // If the position is too far right/down, move it to the left/top
+		}
+		return position;  // If within bounds, keep it as is
 	}
 
 	update() {
-		this.x += this.speedX;
-		this.y += this.speedY;
-		
+		// Update object's position with wrapping logic
+		this.x = this.checkWrap(this.x + this.speedX, CANVAS_WIDTH, this.width);
+		this.y = this.checkWrap(this.y + this.speedY, CANVAS_HEIGHT, this.height);
+
 		/*
 			Loop sprite animation frames
 			If flapSpeed = 3, the frame changes like this:
@@ -50,9 +62,9 @@ class Enemy {
 
 	draw() {
 		ctx.drawImage(
-			this.image, 
-			this.frame * this.spriteWidth, 0, 
-			this.spriteWidth, this.spriteHeight, 
+			this.image,
+			this.frame * this.spriteWidth, 0,
+			this.spriteWidth, this.spriteHeight,
 			this.x, this.y, this.width, this.height
 		);
 	}
