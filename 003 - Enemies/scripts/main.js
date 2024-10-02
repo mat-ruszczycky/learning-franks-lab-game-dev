@@ -32,9 +32,9 @@ class Enemy {
 	update() {
 		this.x += this.speedX;
 		this.y += this.speedY;
-
-		// Loop sprite animation frames
+		
 		/*
+			Loop sprite animation frames
 			If flapSpeed = 3, the frame changes like this:
 				gameFrame = 0: frame = 0
 				gameFrame = 3: frame = 1
