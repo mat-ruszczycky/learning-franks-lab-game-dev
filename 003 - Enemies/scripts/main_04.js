@@ -17,6 +17,9 @@ class Enemy {
 	constructor(imageSrc, spriteWidth, spriteHeight, scale = 2.5) {
 		this.image = new Image();
 		this.image.src = imageSrc;
+
+		// this.speedX = getRandomInRange(-2, 2);
+		// this.speedY = getRandomInRange(-2, 2);
 		this.spriteWidth = spriteWidth;
 		this.spriteHeight = spriteHeight;
 		this.width = this.spriteWidth / scale;
@@ -28,7 +31,21 @@ class Enemy {
 		this.direction = 1;
 	}
 
+	checkWrap(position, limit, size) {
+		if (position < -size) {
+			return limit;  // If the position is too far left/up, move it to the right/bottom
+		}
+		if (position > limit) {
+			return -size;  // If the position is too far right/down, move it to the left/top
+		}
+		return position;  // If within bounds, keep it as is
+	}
+
 	update() {
+		// Update object's position with wrapping logic
+		// this.x = this.checkWrap(this.x + this.speedX, CANVAS_WIDTH, this.width);
+		// this.y = this.checkWrap(this.y + this.speedY, CANVAS_HEIGHT, this.height);
+
 		this.x += Math.random() * 5 - 2.5;
 		this.y += Math.random() * 5 - 2.5;
 
